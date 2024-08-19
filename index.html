@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App</title>
+<link rel="stylesheet" href="https://actwu.github.io/neu/n.css"/>
+<script src="https://actwu.github.io/neu/n.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+<bg mbg></bg>
+<cont mbg>
+<p b italic lora>eList</p>
+</cont>
+
+<div style="top:0; left:0; right:0; position: sticky;" mbg>
+<div row mid-p>
+<a onmousedown="genUrl();" lbg>
+<i l2 class="fa-solid fa-link"></i>
+</a>
+<a onmousedown="clrAll();" rbg>
+<i r2 class="fa-solid fa-trash"></i>
+</a>
+<textarea mbg2 id="data" small-p style="height: 0.2in;"
+bdr="15" placeholder="Make a List" flex></textarea>
+<a onmousedown="addLst();" gbg>
+<i g2 class="fa-solid fa-plus"></i>
+</a>
+</div>
+</div>
+
+<div small-mx small-mb>
+<span id="datalist" small-p></span>
+</div>
+
+<script>
+const uURL = (k, d) => {
+let qs = `?${k}=` + encodeURIComponent(JSON.stringify(d));
+history.replaceState(null, '', qs);
+}
+
+const lURL = k => {
+const up = new URLSearchParams(window.location.search);
+let d = up.get(k);
+if (d) {
+return JSON.parse(decodeURIComponent(d));
+}
+return [];
+}
+
+const sLoc = (k, d) => {
+localStorage.setItem(k, JSON.stringify(d));
+}
+
+const lLoc = k => {
+const d = localStorage.getItem(k);
+if (d) {
+return JSON.parse(d);
+}
+return [];
+}
+
+const addLst = () => {
+const v = document.querySelector('#data').value;
+if (v !== '' && v.trim() !== '') {
+const id = ran(9e4);
+el({name: 'cont', par: '#datalist', at: 'mbg2', id: `d${id}`});
+elAt({name: `#d${id}`, at: 'small-m'});
+elAt({name: `#d${id}`, at: 'bdr', val: '15'});
+elAt({name: `#d${id}`, at: 'flex'});
+elAt({name: `#d${id}`, at: 'list'});
+el({name: 'p', val: v, at: 'b', par: `#d${id}`, id: `a${id}i`});
+document.querySelector('#data').value = '';
+let data = gLst();
+uURL('list', data);
+sLoc('savedList', data);
+}
+}
+
+const gLst = () => {
+let data = [];
+document.querySelectorAll('#datalist cont').forEach(cont => {
+data.push(cont.querySelector('p').innerText);
+});
+return data;
+}
+
+const genUrl = () => {
+let base = window.location.origin + window.location.pathname;
+let data = gLst();
+let qs = '?list=' + encodeURIComponent(JSON.stringify(data));
+let shareUrl = base + qs;
+navigator.clipboard.writeText(shareUrl).then(() => {
+alert('Shareable URL copied to clipboard');
+});
+}
+
+const lLst = () => {
+let data = lURL('list');
+if (!data.length) {
+data = lLoc('savedList');
+}
+data.forEach(item => {
+const id = ran(9e4);
+el({name: 'cont', par: '#datalist', at: 'mbg2', id: `d${id}`});
+elAt({name: `#d${id}`, at: 'small-m'});
+elAt({name: `#d${id}`, at: 'bdr', val: '15'});
+elAt({name: `#d${id}`, at: 'flex'});
+elAt({name: `#d${id}`, at: 'list'});
+el({name: 'p', val: item, at: 'b', par: `#d${id}`, id: `a${id}i`});
+});
+}
+
+const toggleDone = cont => {
+const isDone = cont.hasAttribute('gbg');
+if (isDone) {
+cont.removeAttribute('gbg');
+cont.setAttribute('mbg2', '');
+} else {
+cont.removeAttribute('mbg2');
+cont.setAttribute('gbg', '');
+}
+let data = gLst();
+uURL('list', data);
+sLoc('savedList', data);
+}
+
+const delItem = id => {
+const cont = document.querySelector(`#d${id}`);
+if (cont) {
+cont.remove();
+let data = gLst();
+data = data.filter(i => i !== cont.querySelector('p').innerText);
+uURL('list', data);
+sLoc('savedList', data);
+}
+}
+
+const clrAll = () => {
+document.querySelectorAll('#datalist cont').forEach(cont => cont.remove());
+uURL('list', []);
+sLoc('savedList', []);
+}
+
+document.getElementById('data').addEventListener('keydown', e => {
+if (e.key === 'Enter') {
+e.preventDefault();
+addLst();
+}
+});
+
+document.addEventListener('click', e => {
+if (e.target.tagName === 'CONT' && e.target.hasAttribute('list')) {
+toggleDone(e.target);
+}
+});
+
+document.addEventListener('dblclick', e => {
+if (e.target.tagName === 'CONT' && e.target.hasAttribute('list')) {
+delItem(e.target.id.replace('d', ''));
+}
+});
+
+window.onload = lLst;
+//MADE BY QEW AI (FUTR)
+</script>
+</body>
+</html>
