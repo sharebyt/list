@@ -10,27 +10,65 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 
+<style>
+*{
+--black2:#202035;
+}
+[foot] textarea{
+padding: 0.155in;
+height: 15in;
+max-width: 2.5in;
+}
+a {
+height: 0.1in;
+padding: 0.2in 0.2in;
+width: 0.in;
+max-height: 0.1in;
+transition: all 0.8s;
+}
+a:hover {
+transition: all 0.8s;
+height: 0.1in;
+padding: 0.2in 0.25in;
+scale: 1.1;
+width: 0.in;
+max-height: 0.1in;
+}
+[foot] a{
+padding: 0.01in 0.01in;
+max-height: 1in;
+height: 0.5in;
+width: 0.5in;
+}
+[foot]  a:hover {
+transition: all 0.8s;
+padding: 0.01in 0.08in;
+max-height: 1in;
+height: 0.5in;
+width: 0.5in;
+scale: 1;
+}
+</style>
 <body>
-<bg mbg></bg>
-<cont mbg>
-<p b italic lora>eList</p>
+<bg bbg></bg>
+<cont row>
+<p m unbound item-left>sets</p>
+<a bdr="10" onmousedown="genUrl();" center gbg2>
+<i g class="fa-solid fa-recycle"></i>
+</a>
+<a bdr='15' onmousedown="clrAll();" center rbg2>
+<i r class="fa-solid fa-ban"></i>
+</a>
 </cont>
 
-<div style="bottom:0; left:0; right:0; position: fixed;" mbg>
-<div row mid-p>
-<a onmousedown="genUrl();" lbg>
-<i l2 class="fa-solid fa-link"></i>
+<cont row mid-p bbg foot>
+
+<textarea bbg2 ondblclick="a" id="data" small-p style="height: 0.2in;"
+bdr="15" m placeholder="Set something up..." flex></textarea>
+<a bdr="10" center onmousedown="addLst();" lbg2>
+<i l mid class="fa-solid fa-square-arrow-up-right"></i>
 </a>
-<a onmousedown="clrAll();" rbg>
-<i r2 class="fa-solid fa-trash"></i>
-</a>
-<textarea mbg2 id="data" small-p style="height: 0.2in;"
-bdr="15" placeholder="Make a List" flex></textarea>
-<a hide onmousedown="addLst();" gbg>
-<i g2 class="fa-solid fa-plus"></i>
-</a>
-</div>
-</div>
+</cont>
 
 <div small-mx small-mb>
 <span id="datalist" small-p></span>
@@ -70,12 +108,12 @@ const addLst = () => {
 const v = document.querySelector('#data').value;
 if (v !== '' && v.trim() !== '') {
 const id = ran(9e4);
-el({name: 'cont', par: '#datalist', at: 'mbg2', id: `d${id}`});
+el({name: 'cont', par: '#datalist', at: 'bbg2', id: `d${id}`});
 elAt({name: `#d${id}`, at: 'small-m'});
 elAt({name: `#d${id}`, at: 'bdr', val: '15'});
 elAt({name: `#d${id}`, at: 'flex'});
 elAt({name: `#d${id}`, at: 'list'});
-el({name: 'p', val: v, at: 'b', par: `#d${id}`, id: `a${id}i`});
+el({name: 'p', val: v, at: 'm', par: `#d${id}`, id: `a${id}i`});
 document.querySelector('#data').value = '';
 let data = gLst();
 uURL('list', data);
