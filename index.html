@@ -64,7 +64,7 @@ scale: 1;
 <cont row mid-p bbg foot>
 
 <textarea bbg2 ondblclick="a" id="data" small-p style="height: 0.2in;"
-bdr="15" m placeholder="Set something up..." flex></textarea>
+bdr="15" light m unbound placeholder="Set something up..." flex></textarea>
 <a bdr="10" center onmousedown="addLst();" lbg2>
 <i l mid class="fa-solid fa-square-arrow-up-right"></i>
 </a>
@@ -113,7 +113,9 @@ elAt({name: `#d${id}`, at: 'small-m'});
 elAt({name: `#d${id}`, at: 'bdr', val: '15'});
 elAt({name: `#d${id}`, at: 'flex'});
 elAt({name: `#d${id}`, at: 'list'});
-el({name: 'p', val: v, at: 'm', par: `#d${id}`, id: `a${id}i`});
+el({name: 'p', val: v, at: 'unbound', par: `#d${id}`, id: `a${id}i`});
+elAt({name: `#a${id}i`, at: 'm'});
+
 document.querySelector('#data').value = '';
 let data = gLst();
 uURL('list', data);
@@ -146,24 +148,28 @@ data = lLoc('savedList');
 }
 data.forEach(item => {
 const id = ran(9e4);
-el({name: 'cont', par: '#datalist', at: 'mbg2', id: `d${id}`});
+el({name: 'cont', par: '#datalist', at: 'bbg2', id: `d${id}`});
 elAt({name: `#d${id}`, at: 'small-m'});
+elAt({name: `#d${id}`, at: 'mid-p'});
 elAt({name: `#d${id}`, at: 'bdr', val: '15'});
 elAt({name: `#d${id}`, at: 'flex'});
 elAt({name: `#d${id}`, at: 'list'});
-el({name: 'p', val: item, at: 'b', par: `#d${id}`, id: `a${id}i`});
+el({name: 'p', val: item, at: 'unbound', par: `#d${id}`, id: `a${id}i`});
+elAt({name: `#a${id}i`, at: 'm'});
 });
 }
 
 const toggleDone = cont => {
 const isDone = cont.hasAttribute('gbg');
+
 if (isDone) {
 cont.removeAttribute('gbg');
-cont.setAttribute('mbg2', '');
+cont.setAttribute('bbg2', '');
 } else {
-cont.removeAttribute('mbg2');
+cont.removeAttribute('bbg2');
 cont.setAttribute('gbg', '');
 }
+
 let data = gLst();
 uURL('list', data);
 sLoc('savedList', data);
