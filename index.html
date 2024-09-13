@@ -4,80 +4,142 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>App</title>
+<title>+Set | App</title>
+
 <link rel="stylesheet" href="https://actwu.github.io/neu/n.css"/>
 <script src="https://actwu.github.io/neu/n.js"></script>
+<link rel="stylesheet" href="https://atstem.github.io/just.css/anim.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
 </head>
 
 <style>
-*{
---black2:#202035;
+* {
+--matte2: #1a1a25;
+--black2: #22212f;
+--black: #10101b;
 }
-[foot] textarea{
-padding: 0.155in;
-height: 15in;
-max-width: 2in;
+textarea[mid] {
+width: 80vw;
+height: 65vh;
+white-space: pre-wrap;
 }
+
 a {
+opacity: 1;
 height: 0.1in;
 padding: 0.2in 0.2in;
 width: 0.in;
 max-height: 0.1in;
-transition: all 0.8s;
+transition: width, scale, height, 0.8s;
 }
 a:hover {
-transition: all 0.8s;
+opacity: 1;
+transition: width, scale, height, 0.8s;
 height: 0.1in;
 padding: 0.2in 0.25in;
 scale: 1.1;
 width: 0.in;
 max-height: 0.1in;
 }
-[foot] a{
+[foot] a {
+opacity: 1;
 padding: 0.01in 0.01in;
 max-height: 1in;
 height: 0.5in;
 width: 0.5in;
 }
-[foot]  a:hover {
-transition: all 0.8s;
+[foot] a:hover {
+opacity: 1;
+transition: width, scale, height, 0.8s;
 padding: 0.01in 0.08in;
 max-height: 1in;
 height: 0.5in;
 width: 0.5in;
 scale: 1;
 }
+
+[tn] { letter-spacing: -1.5px; }
 </style>
+
 <body>
 <bg bbg></bg>
-<cont row>
-<p m unbound item-left>sets</p>
-<a bdr="10" onmousedown="genUrl();" center gbg2>
-<i g class="fa-solid fa-recycle"></i>
+
+<screen center id="lister" hide bbg item>
+<textarea bol2 bbg mid ondblclick="a" id="data" small-p bdr="15" light m unbound placeholder="Set something up..." flex></textarea>
+
+<cont foot bbg>
+<a bdr="10" center onmousedown="addLst();" bol2 bbg>
+<i m mid class="fa-solid fa-square-plus"></i>
 </a>
-<a bdr='15' onmousedown="clrAll();" center rbg2>
-<i r class="fa-solid fa-ban"></i>
+</cont>
+</screen>
+
+<screen center id="current" hide bbg item>
+<textarea bol2 bbg mid ondblclick="a" id="curdata" small-p bdr="15" light m unbound placeholder="Edit note..." flex></textarea>
+
+<cont foot bbg >
+<a bdr="10" center onmousedown="closeLst();" bol2 bbg>
+<i m mid class="fa-solid fa-square-xmark"></i>
+</a>
+</cont>
+</screen>
+
+<section>
+<cont row>
+
+<i mid  item-lef class="fa-solid fa-square-plus"> </i>
+<p m tn unbound mid item-left>set</p
+<a bdr="10" onmousedown="genUrl();" center bol2>
+<i g2 class="fa-solid fa-recycle"></i>
+</a>
+<a bdr='15' onmousedown="clrAll();" center bol2>
+<i r2 class="fa-solid fa-ban"></i>
 </a>
 </cont>
 
 <cont row mid-p bbg foot>
-
-<textarea bbg2 ondblclick="a" id="data" small-p style="height: 0.2in;"
-bdr="15" light m unbound placeholder="Set something up..." flex></textarea>
-<a bdr="10" center onmousedown="addLst();" lbg2>
-<i l mid class="fa-solid fa-square-arrow-up-right"></i>
+<a bdr="10" center onmousedown="openList();" bol2 bbg >
+    <i mid m class="fa-solid fa-square-arrow-up-right"></i>
 </a>
 </cont>
 
 <div small-mx small-mb>
-<span id="datalist" small-p></span>
+<span id="datalist"></span>
 </div>
 
-<cont mid>
-</cont>
+<cont mid></cont>
+</section>
 
 <script>
+let currentItemId = null;
+
+const openList = () => {         
+elRemAt({name: `#lister`, at: 'hide'});
+}
+
+const opencurList = () => {         
+elRemAt({name: `#current`, at: 'hide'});
+}
+
+const closeLst = () => {         
+if (currentItemId !== null) {
+const curData = document.querySelector('#curdata').value;
+const cont = document.querySelector(`#d${currentItemId}`);
+if (cont) {
+cont.querySelector('textarea').value = curData; 
+const preview = curData.length > 7 ? curData.substring(0, 7) + '...' : curData;
+cont.querySelector('p').innerText = preview; 
+}
+let data = gLst();
+uURL('list', data);
+sLoc('savedList', data);
+}
+elAt({name: `#lister`, at: 'hide'});
+elAt({name: `#current`, at: 'hide'});
+currentItemId = null;
+}
+
 const uURL = (k, d) => {
 let qs = `?${k}=` + encodeURIComponent(JSON.stringify(d));
 history.replaceState(null, '', qs);
@@ -108,25 +170,27 @@ const addLst = () => {
 const v = document.querySelector('#data').value;
 if (v !== '' && v.trim() !== '') {
 const id = ran(9e4);
-el({name: 'cont', par: '#datalist', at: 'bbg2', id: `d${id}`});
+el({name: 'cont', par: '#datalist', at: 'bol2', id: `d${id}`});
 elAt({name: `#d${id}`, at: 'small-m'});
 elAt({name: `#d${id}`, at: 'bdr', val: '15'});
 elAt({name: `#d${id}`, at: 'flex'});
 elAt({name: `#d${id}`, at: 'list'});
-el({name: 'p', val: v, at: 'unbound', par: `#d${id}`, id: `a${id}i`});
-elAt({name: `#a${id}i`, at: 'm'});
+
+el({name: 'p', val: v.length > 7 ? v.substring(0, 7) + '...' : v, at: 'unbound', par: `#d${id}`, id: `a${id}p`});
+el({name: 'textarea', val: v, at: 'hidden', par: `#d${id}`, id: `a${id}full`});
 
 document.querySelector('#data').value = '';
 let data = gLst();
 uURL('list', data);
 sLoc('savedList', data);
 }
+elAt({name: `#lister`, at: 'hide'});
 }
 
 const gLst = () => {
 let data = [];
 document.querySelectorAll('#datalist cont').forEach(cont => {
-data.push(cont.querySelector('p').innerText);
+data.push(cont.querySelector('textarea').value);
 });
 return data;
 }
@@ -148,28 +212,28 @@ data = lLoc('savedList');
 }
 data.forEach(item => {
 const id = ran(9e4);
-el({name: 'cont', par: '#datalist', at: 'bbg2', id: `d${id}`});
+el({name: 'cont', par: '#datalist', at: 'bsh2', id: `d${id}`});
+elAt({name: `#d${id}`, at: 'mol2'});
 elAt({name: `#d${id}`, at: 'small-m'});
 elAt({name: `#d${id}`, at: 'mid-p'});
 elAt({name: `#d${id}`, at: 'bdr', val: '15'});
-elAt({name: `#d${id}`, at: 'flex'});
 elAt({name: `#d${id}`, at: 'list'});
-el({name: 'p', val: item, at: 'unbound', par: `#d${id}`, id: `a${id}i`});
-elAt({name: `#a${id}i`, at: 'm'});
+
+el({name: 'p', val: item.length > 7 ? item.substring(0, 7) + '...' : item, at: 'unbound', par: `#d${id}`, id: `a${id}p`});
+
+el({name: 'textarea', val: item, at: 'hide', par: `#d${id}`, id: `a${id}full`});
 });
 }
 
 const toggleDone = cont => {
 const isDone = cont.hasAttribute('gbg');
-
 if (isDone) {
 cont.removeAttribute('gbg');
-cont.setAttribute('bbg2', '');
+cont.setAttribute('bol2', '');
 } else {
-cont.removeAttribute('bbg2');
+cont.removeAttribute('bol2');
 cont.setAttribute('gbg', '');
 }
-
 let data = gLst();
 uURL('list', data);
 sLoc('savedList', data);
@@ -180,7 +244,7 @@ const cont = document.querySelector(`#d${id}`);
 if (cont) {
 cont.remove();
 let data = gLst();
-data = data.filter(i => i !== cont.querySelector('p').innerText);
+data = data.filter(i => i !== cont.querySelector('textarea').value);
 uURL('list', data);
 sLoc('savedList', data);
 }
@@ -201,7 +265,9 @@ addLst();
 
 document.addEventListener('click', e => {
 if (e.target.tagName === 'CONT' && e.target.hasAttribute('list')) {
-toggleDone(e.target);
+currentItemId = e.target.id.replace('d', '');
+document.querySelector('#curdata').value = e.target.querySelector('textarea').value; 
+opencurList();
 }
 });
 
@@ -212,7 +278,8 @@ delItem(e.target.id.replace('d', ''));
 });
 
 window.onload = lLst;
-//MADE BY QEW AI (FUTR)
 </script>
+
+
 </body>
 </html>
